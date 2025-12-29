@@ -45,6 +45,7 @@ export default {
 - {"filename": "components.js", "query": "theme", "context": 5} - Search with more context lines
 - {"filename": "blueprint.txt", "query": "nav", "max_results": 3} - Limit number of matches
 - {"filename": "server.js", "query": "function", "case_sensitive": true} - Case-sensitive search
+- {"filename": "server.js", "query": "searchInContent", "function_search": true} - Find complete functions and code blocks
 
 ## Blueprint System Overview
 
@@ -61,8 +62,13 @@ blueprint.txt starts with page:name; then add components and flows.
 - Quotes optional for other params; both theme=dark and theme="dark" work
 - Use semicolons to separate parameters, missing semicolons are fine
 
+## Definitions:
+- Blueprints -- overall page structure template
+- Components -- individual, reusable modules such as nav bars, header & text, buttons, or inputs. Can come with javascript built in
+- Flows -- reusable Javascript code defining behaviors such as fade transition, login logic, or animations
+
 ## File Structure:
-- schema/ - Component definitions. Search here, don't modify
+- schema/ - Component definitions
 - sandbox/ - Generated files and your workspace
 - Blueprint/ - root directory with generate.js and blueprint.txt
 - blueprint.txt - Your blueprint source

@@ -161,6 +161,147 @@ lines.forEach(line => {
   }
 });
 
+// Function to generate error logging script
+function getErrorLoggingScript(outputName) {
+  return `
+<script>
+// Error logging for Blueprint
+const ERROR_LOG_ENDPOINT = 'http://localhost:3002/log-browser-error';
+const PAGE_NAME = '${outputName}.html';
+
+window.onerror = function(message, source, line, column, error) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'error',
+      message: message,
+      source: source,
+      line: line,
+      column: column,
+      stack: error?.stack || null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+  return false;
+};
+
+window.addEventListener('unhandledrejection', function(event) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'error',
+      message: 'Unhandled Promise: ' + event.reason,
+      source: 'promise',
+      line: null,
+      column: null,
+      stack: event.reason?.stack || null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+});
+
+// Override console methods
+const originalConsole = {
+  log: console.log,
+  warn: console.warn,
+  error: console.error
+};
+
+console.log = function(...args) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'log',
+      message: args.join(' '),
+      source: 'console',
+      line: null,
+      column: null,
+      stack: null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+  originalConsole.log.apply(console, args);
+};
+
+console.warn = function(...args) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'warning',
+      message: args.join(' '),
+      source: 'console',
+      line: null,
+      column: null,
+      stack: null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+  originalConsole.warn.apply(console, args);
+};
+
+console.error = function(...args) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'error',
+      message: args.join(' '),
+      source: 'console',
+      line: null,
+      column: null,
+      stack: null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+  originalConsole.error.apply(console, args);
+};
+
+// Capture network errors
+const originalFetch = window.fetch;
+window.fetch = function(...args) {
+  return originalFetch.apply(this, args)
+    .catch(error => {
+      fetch(ERROR_LOG_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          timestamp: new Date().toISOString(),
+          page: PAGE_NAME,
+          type: 'network',
+          message: 'Fetch failed: ' + error.message,
+          source: args[0],
+          line: null,
+          column: null,
+          stack: error.stack,
+          url: window.location.href,
+          userAgent: navigator.userAgent
+        })
+      }).catch(() => {});
+      throw error;
+    });
+};
+</script>`;
+}
+
 // Close blueprint
 if (blueprintLine) {
   const { base } = parseParams(blueprintLine);
@@ -174,6 +315,11 @@ if (blueprintLine) {
   }
 }
 
+// Inject error logging script before closing body
+if (html.includes('</body>')) {
+  html = html.replace('</body>', getErrorLoggingScript(outputName) + '</body>');
+}
+
 // Ensure sandbox directory exists
 const sandboxDir = './sandbox';
 if (!fs.existsSync(sandboxDir)) {
@@ -181,13 +327,18 @@ if (!fs.existsSync(sandboxDir)) {
 }
 
 const files = [
-  { content: html, path: path.join(sandboxDir, `${outputName}.html`) },
-  { content: css, path: path.join(sandboxDir, `${outputName}.css`) },
-  { content: js, path: path.join(sandboxDir, `${outputName}.js`) }
+  { content: html, path: path.join(sandboxDir, `${outputName}.html`), type: 'HTML' },
+  { content: css, path: path.join(sandboxDir, `${outputName}.css`), type: 'CSS' },
+  { content: js, path: path.join(sandboxDir, `${outputName}.js`), type: 'JS' }
 ];
 console.log('🎉 Blueprint compilation complete!');
 
 files.forEach(file => {
-  fs.writeFileSync(file.path, file.content);
-  console.log(`Generated ${file.path}`);
+  // Only write file if it has content
+  if (file.content && file.content.trim().length > 0) {
+    fs.writeFileSync(file.path, file.content);
+    console.log(`✅ Generated ${file.path}`);
+  } else {
+    console.log(`⏭️  Skipped ${file.type} (no content)`);
+  }
 });

@@ -93,7 +93,6 @@ export const components = {
 </div>`;
     },
     css: `
-/* Glassmorphism style - with container background */
 .nav-links-glassmorphism {
   display: inline-flex;
   gap: 14px;
@@ -117,7 +116,6 @@ export const components = {
   left: var(--pill-position-glass, 8px);
 }
 
-/* Minimal style. no container, just pill */
 .nav-links-minimal {
   display: inline-flex;
   gap: 14px;
@@ -423,6 +421,7 @@ if (document.querySelector('.nav-links-minimal')) {
       const descriptionFont = params.descriptionFont || 'Inter';
       const color = params.color;
       const centered = params.centered !== false;
+      const size = params.size || '3rem';
       
       const themeColors = {
         light: {
@@ -443,7 +442,7 @@ if (document.querySelector('.nav-links-minimal')) {
 
       return `
 <div class="hero-section ${centerClass}" style="margin-top: ${spacing}; margin-bottom: ${spacing};">
-  <h1 style="color: ${titleColor}; font-family: '${titleFont}', serif;">${title}</h1>
+  <h1 style="color: ${titleColor}; font-family: '${titleFont}', serif; font-size: ${size};">${title}</h1>
   <p style="color: ${descriptionColor}; font-family: '${descriptionFont}', sans-serif;">${description}</p>
 </div>`;
     },
@@ -463,7 +462,6 @@ if (document.querySelector('.nav-links-minimal')) {
 }
 
 .hero-section h1 {
-  font-size: 3rem;
   font-weight: 700;
   margin: 0 0 1rem 0;
   line-height: 1.2;

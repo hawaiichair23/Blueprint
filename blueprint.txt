@@ -1,4 +1,3 @@
-page:project-showcase-dark;
+page:error-test;
 blueprint:test/blank; theme=dark;
-hero; title="Project Cards - Light Theme"; description="Showcasing project cards with minimal styling in light mode";
-project-cards; count=3; titles=[EcoTracker Dashboard,Neural Chat Interface,Portfolio Generator]; descriptions=[Real-time environmental monitoring system with interactive data visualization and smart alerts for sustainable living.,AI-powered conversation interface with natural language processing and contextual understanding capabilities.,Automated portfolio creation tool that transforms your projects into stunning professional websites with zero coding required.]; tech=[React • Node.js • MongoDB,Python • TensorFlow • WebSockets,Next.js • TypeScript • Tailwind]; status=[Live,Beta,Coming Soon];
+hero; title="Error Test Page"; description="Open F12 console - errors will be logged automatically";

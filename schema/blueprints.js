@@ -14,7 +14,6 @@ export const blueprints = {
 <body>`,
             end: `
 </body>
-<script src="${params.output}.js"></script>
 </html>`
         }),
         css: (params = {}) => {
