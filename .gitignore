@@ -5,3 +5,4 @@ hashes.txt
 tools/dist/
 tools/node_modules/
 .env
+.claude/
