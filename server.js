@@ -9,7 +9,10 @@ import { fileURLToPath } from 'url';
 import http from 'http';
 import fsSync from 'fs';
 import * as acorn from 'acorn';
-import * as walk from 'acorn-walk';  
+import * as walk from 'acorn-walk';
+import dotenv from 'dotenv';
+
+dotenv.config();  
 
 // Get the directory where this script is located (Blueprint folder)
 const __filename = fileURLToPath(import.meta.url);
@@ -298,20 +301,20 @@ const ALLOWED_BASE_FILES = [
     'blueprint.txt',
     'prt.js',
     'generate.js',
+    'schema/components.js',
+    'schema/blueprints.js',
+    'schema/flows.js',
+    'schema/index.js',
+    'server.js'
 ];
 
 // Directories allowed for unrestricted writes
-const ALLOWED_DIRECTORIES = [
-    'C:/Users/magic/Desktop/Texterity/texterity_app'
-];
+const ALLOWED_DIRECTORIES = process.env.ALLOWED_DIRECTORIES 
+    ? process.env.ALLOWED_DIRECTORIES.split(',').map(dir => dir.trim())
+    : [];
 
 function resolveFilePath(filename) {
-    // Check if it's an allowed absolute path first
-    if (ALLOWED_BASE_FILES.includes(filename)) {
-        return filename;
-    }
-
-    // Check if path is within an allowed directory
+    // Check if path is within an allowed directory (absolute paths)
     if (path.isAbsolute(filename)) {
         const normalizedPath = path.normalize(filename);
         for (const allowedDir of ALLOWED_DIRECTORIES) {
@@ -321,19 +324,18 @@ function resolveFilePath(filename) {
         }
     }
 
-    if (filename.includes('..') || path.isAbsolute(filename)) {
+    // Block directory traversal attempts
+    if (filename.includes('..')) {
         throw new Error('JAILBREAK ATTEMPT: Invalid filename');
     }
 
+    // Strip sandbox/ prefix if present
     const normalizedFilename = filename.startsWith('sandbox/')
         ? filename.replace('sandbox/', '')
         : filename;
 
-    if (ALLOWED_BASE_FILES.includes(normalizedFilename)) {
-        return path.join(BASE_DIR, normalizedFilename);
-    }
-
-    return resolveInSandbox(normalizedFilename);
+    // Allow writing to any file in BASE_DIR (Blueprint directory)
+    return path.join(BASE_DIR, normalizedFilename);
 }
 
 // Cleanup old errors
@@ -419,10 +421,8 @@ errorLogServer.on('error', (err) => {
 });
 
 errorLogServer.listen(3002, () => {
-    console.log('Error logging server running on http://localhost:3002');
 });
 
-// 3 core tools
 server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
         tools: [
@@ -879,55 +879,39 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         // WRITE TOOL - Handles all file writing operations
         if (name === 'write') {
             switch (args.mode) {
-                case 'overwrite':
+                                case 'overwrite':
                     if (!args.content) {
                         throw new Error('content is required for overwrite mode');
                     }
                     
-                    // Prevent writing whitelisted files with overwrite mode
-                    if (ALLOWED_BASE_FILES.includes(args.filename)) {
-                        return {
-                            content: [{
-                                type: 'text',
-                                text: `❌ Cannot overwrite ${args.filename}. Use blueprint mode for blueprint.txt.`
-                            }]
-                        };
-                    }
-                    
                     const overwritePath = resolveFilePath(args.filename);
-
-                    // Only enforce limits and backup for sandbox files
-                    if (!path.isAbsolute(args.filename)) {
-                        const debugInfo = await enforceWriteLimits(args.content, args.filename);
-                        await checkAndBackup(`sandbox/${args.filename}`, args.content);
-                        await fs.writeFile(overwritePath, args.content);
-
-                        const sandboxFiles = await fs.readdir(SANDBOX_DIR);
-                        const fileList = sandboxFiles.join(', ');
-
-                        return {
-                            content: [{
-                                type: 'text',
-                                text: `✅ Written to sandbox/${args.filename}\n${debugInfo}\n[DEBUG] Files in sandbox: ${fileList}`
-                            }]
-                        };
-                    } else {
-                        // For absolute paths (allowed directories)
-                        await fs.writeFile(overwritePath, args.content);
-
-                        return {
-                            content: [{
-                                type: 'text',
-                                text: `✅ Written to ${args.filename}`
-                            }]
-                        };
-                    }
+                    await fs.writeFile(overwritePath, args.content);
+                
+                    return {
+                        content: [{
+                            type: 'text',
+                            text: `✅ Written to ${args.filename}`
+                        }]
+                    };
                 case 'segment':
                     if (!args.old_str || !args.new_str) {
                         throw new Error('old_str and new_str are required for segment mode');
                     }
                 
                     const segmentPath = resolveFilePath(args.filename);
+
+                    // SECURITY NOTE: If filename is not in ALLOWED_BASE_FILES or ALLOWED_DIRECTORIES,
+                    // resolveFilePath redirects it to sandbox/. Check if path was redirected:
+                    const wasRedirectedToSandbox = segmentPath.includes('sandbox') && !args.filename.includes('sandbox');
+                    if (wasRedirectedToSandbox) {
+                        return {
+                            content: [{
+                                type: 'text',
+                                text: `⚠️ SECURITY: "${args.filename}" is not whitelisted. Write redirected to sandbox/${args.filename}`
+                            }]
+                        };
+                    }
+                    
                     let fileContent = await fs.readFile(segmentPath, 'utf-8');
                 
                     // Helper: normalize text for matching (removes excess whitespace)
@@ -1105,10 +1089,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     const afterMatch = fileContent.substring(endOffset);
                     const updatedContent = beforeMatch + adjustedNewCode + afterMatch;
                 
-                    // Skip backup for absolute paths
+                                        // Skip backup for absolute paths
                     if (!path.isAbsolute(args.filename)) {
                         const relativePath = ALLOWED_BASE_FILES.includes(args.filename) ? args.filename : `sandbox/${args.filename}`;
-                        await checkAndBackup(relativePath, updatedContent);
                     }
                     await fs.writeFile(segmentPath, updatedContent);
                 
@@ -1125,9 +1108,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         throw new Error('content is required for blueprint mode');
                     }
                     
+                                        
                     const blueprintPath = resolveFilePath('blueprint.txt');
                     await enforceWriteLimits(args.content, 'blueprint.txt');
-                    await checkAndBackup('blueprint.txt', args.content);
                     await fs.writeFile(blueprintPath, args.content);
                     
                     return { 

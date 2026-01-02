@@ -1,7 +1,7 @@
-// Schema Table of Contents - imports all modular schema files
+// schema table of contents - imports all modular schema files
 import { blueprints } from './blueprints.js';
-import { components } from './components.js';
-import { flows } from './flows.js';
+import { components } from './components/index.js';
+import { flows } from './flows/index.js';
 
 export default {
     blueprints,

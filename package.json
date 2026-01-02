@@ -6,7 +6,8 @@
         "@modelcontextprotocol/sdk": "^0.6.0",
         "acorn": "^8.15.0",
         "acorn-walk": "^8.3.4",
-        "chokidar": "^4.0.3"
+        "chokidar": "^4.0.3",
+        "dotenv": "^17.2.3"
     },
     "bin": {
         "blueprint-server": "./server.js"

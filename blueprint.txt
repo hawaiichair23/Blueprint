@@ -1,3 +1,0 @@
-page:error-test;
-blueprint:test/blank; theme=dark;
-hero; title="Error Test Page"; description="Open F12 console - errors will be logged automatically";

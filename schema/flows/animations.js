@@ -1,26 +1,6 @@
-// Flow interactions that generate JavaScript
-export const flows = {
-    'flow:email_submit > dashboard': {
-        js: `
-document.getElementById("email-login").addEventListener("click", function (e) {
-    e.preventDefault();
-    fadeOut(loginBox, () => fadeIn(dashboard));
-});`
-    },
-
-    'flow:google_auth > dashboard': {
-        js: `// Google auth flow - would redirect to /auth/google in real app`
-    },
-
-    'flow:logout > login': {
-        js: `
-document.getElementById("logout-btn").addEventListener("click", function () {
-    fadeOut(dashboard, () => fadeIn(loginBox));
-});`
-    },
-
-    'flow:page_transition; style=fade': {
-        js: `
+// animation flows - transitions and visual effects
+export const pageTransitionFade = {
+  js: `
 // Page transition with fade effect
 if (document.querySelector('.nav-links-minimal') && document.getElementById('main-content')) {
   const navLinks = document.querySelector('.nav-links-minimal');
@@ -109,5 +89,4 @@ if (document.querySelector('.nav-links-minimal') && document.getElementById('mai
     });
   });
 }`
-    }
 };

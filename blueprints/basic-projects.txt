@@ -1,0 +1,4 @@
+page:basic-projects;
+blueprint:test/blank;
+hero; title="My Projects";
+project-cards;

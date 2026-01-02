@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Faustina:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="midnight-portfolio.css">
+</head>
+<body>
+<div class="hero-section centered-hero" style="margin-top: 80px; margin-bottom: 80px;">
+  <h1 style="color: #e8d4f8; font-family: 'Instrument Serif', serif; font-size: 3.5rem;">Midnight Projects</h1>
+  <p style="color: #e8d4f8; font-family: 'Inter', sans-serif;">Showcasing work built in the quiet hours</p>
+</div>
+<div class="projects-section" style="margin-top: 40px; margin-bottom: 40px;">
+  <div class="projects-grid" data-theme="dark">
+    
+    <div class="project-card" data-theme="dark">
+      <div class="project-status live">Live</div>
+      <h3 style="color: #e8d4f8;">Constellation Map</h3>
+            <p style="color: #c8b4d8;">Interactive star chart with real-time astronomical data and constellation identification using WebGL rendering.</p>
+      <div class="tech-stack">Three.js • WebGL • Astronomy API</div>
+      <div class="project-links">
+        <a href="#" class="btn-primary">View Project</a>
+        <a href="#" class="btn-secondary" style="color: #f7f7f7ff;">GitHub</a>
+      </div>
+    </div>
+    <div class="project-card" data-theme="dark">
+      <div class="project-status beta">Beta</div>
+      <h3 style="color: #e8d4f8;">Lunar Phase Tracker</h3>
+            <p style="color: #c8b4d8;">Track moon phases and celestial events with precise calculations and beautiful visualizations.</p>
+      <div class="tech-stack">JavaScript • Canvas • Lunar Calc</div>
+      <div class="project-links">
+        <a href="#" class="btn-primary">View Project</a>
+        <a href="#" class="btn-secondary" style="color: #f7f7f7ff;">GitHub</a>
+      </div>
+    </div>
+    <div class="project-card" data-theme="dark">
+      <div class="project-status coming-soon">Coming Soon</div>
+      <h3 style="color: #e8d4f8;">Deep Space Explorer</h3>
+            <p style="color: #c8b4d8;">Navigate through distant galaxies with immersive 3D space exploration and educational content.</p>
+      <div class="tech-stack">React Three Fiber • GSAP • NASA API</div>
+      <div class="project-links">
+        <a href="#" class="btn-primary">View Project</a>
+        <a href="#" class="btn-secondary" style="color: #f7f7f7ff;">GitHub</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Error logging for Blueprint
+const ERROR_LOG_ENDPOINT = 'http://localhost:3002/log-browser-error';
+const PAGE_NAME = 'midnight-portfolio.html';
+
+window.onerror = function(message, source, line, column, error) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'error',
+      message: message,
+      source: source,
+      line: line,
+      column: column,
+      stack: error?.stack || null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+  return false;
+};
+
+window.addEventListener('unhandledrejection', function(event) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'error',
+      message: 'Unhandled Promise: ' + event.reason,
+      source: 'promise',
+      line: null,
+      column: null,
+      stack: event.reason?.stack || null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+});
+
+// Override console methods
+const originalConsole = {
+  log: console.log,
+  warn: console.warn,
+  error: console.error
+};
+
+console.log = function(...args) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'log',
+      message: args.join(' '),
+      source: 'console',
+      line: null,
+      column: null,
+      stack: null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+  originalConsole.log.apply(console, args);
+};
+
+console.warn = function(...args) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'warning',
+      message: args.join(' '),
+      source: 'console',
+      line: null,
+      column: null,
+      stack: null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+  originalConsole.warn.apply(console, args);
+};
+
+console.error = function(...args) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'error',
+      message: args.join(' '),
+      source: 'console',
+      line: null,
+      column: null,
+      stack: null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+  originalConsole.error.apply(console, args);
+};
+
+// Capture network errors
+const originalFetch = window.fetch;
+window.fetch = function(...args) {
+  return originalFetch.apply(this, args)
+    .catch(error => {
+      fetch(ERROR_LOG_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          timestamp: new Date().toISOString(),
+          page: PAGE_NAME,
+          type: 'network',
+          message: 'Fetch failed: ' + error.message,
+          source: args[0],
+          line: null,
+          column: null,
+          stack: error.stack,
+          url: window.location.href,
+          userAgent: navigator.userAgent
+        })
+      }).catch(() => {});
+      throw error;
+    });
+};
+</script></body>
+</html>

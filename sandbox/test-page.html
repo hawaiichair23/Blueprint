@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Faustina:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="test-page.css">
+    </head>
+    <body>
+        <div class="nav-container" style="display: flex; justify-content: center;">
+        <div class="nav-links-glassmorphism" style="margin: 30px 0; --nav-text-color: #f7f7f7ff; --pill-bg-glass: rgba(255, 255, 255, 0.08); --pill-bg-minimal: rgba(255, 255, 255, 0.12); font-family: 'Inter', sans-serif;">
+        <a href="#" class="active">Home</a><a href="#" class="">About</a><a href="#" class="">Contact</a>
+        </div>
+        </div>
+<div class="hero-section centered-hero" style="margin-top: 60px; margin-bottom: 60px;">
+  <h1 style="color: #f7f7f7ff; font-family: 'Instrument Serif', serif; font-size: 3rem;">Testing Modular Structure</h1>
+  <p style="color: #f7f7f7ff; font-family: 'Inter', sans-serif;">Let's see if this works with the new file organization</p>
+</div>
+<div class="features-grid" style="font-family: 'Inter', sans-serif; color: #f7f7f7ff; margin-top: 60px; margin-bottom: 60px;">
+
+      <div class="feature-item">
+        <div class="feature-icon blue"></div>
+        <span>Feature 1</span>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon orange"></div>
+        <span>Feature 2</span>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon green"></div>
+        <span>Feature 3</span>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon blue"></div>
+        <span>Feature 4</span>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon green"></div>
+        <span>Feature 5</span>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon green"></div>
+        <span>Feature 6</span>
+      </div>
+</div>
+    <script src="test-page.js"></script>
+    
+<script>
+// Error logging for Blueprint
+const ERROR_LOG_ENDPOINT = 'http://localhost:3002/log-browser-error';
+const PAGE_NAME = 'test-page.html';
+
+window.onerror = function(message, source, line, column, error) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'error',
+      message: message,
+      source: source,
+      line: line,
+      column: column,
+      stack: error?.stack || null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+  return false;
+};
+
+window.addEventListener('unhandledrejection', function(event) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'error',
+      message: 'Unhandled Promise: ' + event.reason,
+      source: 'promise',
+      line: null,
+      column: null,
+      stack: event.reason?.stack || null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+});
+
+// Override console methods
+const originalConsole = {
+  log: console.log,
+  warn: console.warn,
+  error: console.error
+};
+
+console.log = function(...args) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'log',
+      message: args.join(' '),
+      source: 'console',
+      line: null,
+      column: null,
+      stack: null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+  originalConsole.log.apply(console, args);
+};
+
+console.warn = function(...args) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'warning',
+      message: args.join(' '),
+      source: 'console',
+      line: null,
+      column: null,
+      stack: null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+  originalConsole.warn.apply(console, args);
+};
+
+console.error = function(...args) {
+  fetch(ERROR_LOG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      page: PAGE_NAME,
+      type: 'error',
+      message: args.join(' '),
+      source: 'console',
+      line: null,
+      column: null,
+      stack: null,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    })
+  }).catch(() => {});
+  originalConsole.error.apply(console, args);
+};
+
+// Capture network errors
+const originalFetch = window.fetch;
+window.fetch = function(...args) {
+  return originalFetch.apply(this, args)
+    .catch(error => {
+      fetch(ERROR_LOG_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          timestamp: new Date().toISOString(),
+          page: PAGE_NAME,
+          type: 'network',
+          message: 'Fetch failed: ' + error.message,
+          source: args[0],
+          line: null,
+          column: null,
+          stack: error.stack,
+          url: window.location.href,
+          userAgent: navigator.userAgent
+        })
+      }).catch(() => {});
+      throw error;
+    });
+};
+</script></body>
+    </html>

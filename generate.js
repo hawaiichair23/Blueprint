@@ -59,8 +59,45 @@ function parseParams(line) {
   return { base, params };
 }
 
-const blueprint = fs.readFileSync('blueprint.txt', 'utf-8');
-const lines = blueprint.split('\n').filter(line => line.trim()).map(line => line.trim());
+// Get blueprint filename from command line argument or default to reading all
+const args = process.argv.slice(2);
+const specificBlueprint = args[0]; // e.g., 'test-page'
+
+// Determine which blueprint files to process
+const blueprintsDir = './blueprints';
+let blueprintFiles = [];
+
+if (specificBlueprint) {
+  // Process single blueprint
+  const filename = specificBlueprint.endsWith('.txt') ? specificBlueprint : `${specificBlueprint}.txt`;
+  blueprintFiles = [filename];
+  console.log(`📝 Processing blueprint: ${filename}\n`);
+} else {
+  // Process all blueprints in folder
+  if (fs.existsSync(blueprintsDir)) {
+    blueprintFiles = fs.readdirSync(blueprintsDir).filter(f => f.endsWith('.txt'));
+    console.log(`📝 Processing all blueprints in /blueprints: ${blueprintFiles.join(', ')}\n`);
+  } else {
+    console.error('❌ blueprints/ folder not found');
+    process.exit(1);
+  }
+}
+
+// Process each blueprint file
+blueprintFiles.forEach(filename => {
+  const blueprintPath = path.join(blueprintsDir, filename);
+  
+  if (!fs.existsSync(blueprintPath)) {
+    console.error(`❌ Blueprint file not found: ${blueprintPath}`);
+    return;
+  }
+
+  console.log(`\n${'='.repeat(50)}`);
+  console.log(`Processing: ${filename}`);
+  console.log('='.repeat(50));
+
+  const blueprintContent = fs.readFileSync(blueprintPath, 'utf-8');
+  const lines = blueprintContent.split('\n').filter(line => line.trim()).map(line => line.trim());
 
 // Get page name from page: directive or default to 'app'
 const pageLine = lines.find(line => line.startsWith('page:'));
@@ -342,3 +379,5 @@ files.forEach(file => {
     console.log(`⏭️  Skipped ${file.type} (no content)`);
   }
 });
+
+}); // End of blueprintFiles.forEach

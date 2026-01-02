@@ -1,20 +1,21 @@
 // Base blueprints that define the overall structure
 export const blueprints = {
-    'blueprint:test/blank': {
+        'blueprint:test/blank': {
         html: (params = {}) => ({
             start: `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Page</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Faustina:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="${params.output}.css">
-</head>
-<body>`,
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Faustina:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="${params.output}.css">
+    </head>
+    <body>`,
             end: `
-</body>
-</html>`
+    <script src="${params.output}.js"></script>
+    </body>
+    </html>`
         }),
         css: (params = {}) => {
             const theme = params.theme || 'light';
