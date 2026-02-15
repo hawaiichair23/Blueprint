@@ -65,69 +65,80 @@ export const steps = {
 ${items.join('')}
 </div>`;
   },
-  css: `
-.process-steps {
-position: relative;
-max-width: 700px;
-margin: 0 auto;
-text-align: left;
-}
-
-.process-steps::before {
-content: '';
-position: absolute;
-left: 18px;
-top: 35px;
-bottom: 35px;
-width: 1px;
-background: repeating-linear-gradient(
- to bottom,
- var(--line-color) 0px,
- var(--line-color) 4px,
- transparent 4px,
- transparent 8px
-);
-z-index: 0;
-}
-
-.step-item {
-display: flex;
-gap: 23px;
-margin-bottom: 40px;
-position: relative;
-z-index: 1;
-}
-
-.step-item:last-child {
-margin-bottom: 0;
-}
-
-.step-number {
-width: 37px;
-height: 37px;
-background: #007AFF;
-border-radius: 50%;
-color: #f7f7f7ff;
-display: flex;
-align-items: center;
-justify-content: center;
-font-weight: 600;
-font-size: 14px;
-flex-shrink: 0;
-}
-
-.step-content h4 {
-font-size: 18px;
-font-weight: 600;
-margin: 0 0 8px 0;
-}
-
-.step-content p {
-font-size: 15px;
-line-height: 1.4;
-margin: 0;
-text-align: left;
-}
-`,
+        css: `
+    .process-steps {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: left;
+    padding: 0 1rem;
+    }
+    
+                .process-steps::before {
+          content: '';
+          position: absolute;
+          left: 2.125rem;
+          top: 2.1875rem;
+          bottom: 2.1875rem;
+          width: 1px;
+          background: repeating-linear-gradient(
+            to bottom,
+            var(--line-color) 0px,
+            var(--line-color) 4px,
+            transparent 4px,
+            transparent 8px
+          );
+          z-index: 0;
+        }
+    
+    .step-item {
+    display: flex;
+    gap: 1.4375rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+    }
+    
+    .step-item:last-child {
+    margin-bottom: 0;
+    }
+    
+    .step-number {
+    width: 2.3125rem;
+    height: 2.3125rem;
+    background: #007AFF;
+    border-radius: 50%;
+    color: #f7f7f7ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+    }
+    
+    .step-content h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    }
+    
+    .step-content p {
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    margin: 0;
+    text-align: left;
+    }
+    
+        @media (min-width: 768px) {
+      .process-steps {
+        padding: 0 2rem;
+      }
+      
+      .process-steps::before {
+        left: 3.125rem;
+      }
+    }
+    `,
   js: ``
 };

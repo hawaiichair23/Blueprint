@@ -4,5 +4,6 @@ old/
 hashes.txt
 tools/dist/
 tools/node_modules/
+generate.bat
 .env
-.claude/
+tools/

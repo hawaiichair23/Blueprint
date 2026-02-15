@@ -1,5 +1,5 @@
 page:test-page;
 blueprint:test/blank; theme=dark;
 nav; links=[Home,About,Contact]; layout=center;
-hero; title="Testing Modular Structure"; description="Let's see if this works with the new file organization";
+hero; title="Testing Modular Structure"; description="Let's see if this works.";
 features-grid; count=6;

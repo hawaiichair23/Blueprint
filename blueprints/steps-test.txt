@@ -1,0 +1,4 @@
+page:steps-test;
+blueprint:test/blank; theme=light;
+hero; title="Our Process";
+steps; count=5;

@@ -9,25 +9,28 @@ const BASE_DIR = path.dirname(__filename);
 const VERSIONS_DIR = path.join(BASE_DIR, 'versions');
 const HASHES_FILE = path.join(BASE_DIR, 'hashes.txt');
 
+/*
+ * prt.js is an automatic file versioning system.
+ * 
+ * It watches project files and creates timestamped backups 
+ * for every file change in versions/ with /YYYY-MM-DD/H-MM-SS-AM-filename/.
+ * 
+ * prt tracks file changes by user, as well as file changes by AI assistant.
+ * 
+ * prt uses SHA-256 hashing to deduplicate so it will only save when content
+ * has actually changed. 
+ * 
+ * No commands needed to run; it will run automatically when the MCP server starts.
+ * Browse your versions/ folder to see previous versions of files by day.
+ */
+
 // Simple lock for hash file operations
 let hashFileLock = Promise.resolve();
-
-// Generate random ID for backup folders
-function generateRandomId() {
-    return crypto.randomBytes(3).toString('hex');
-}
 
 // Calculate SHA256 hash of content
 // Used for deduplication
 function calculateHash(content) {
     return crypto.createHash('sha256').update(content).digest('hex');
-}
-
-// Get stored hash for a filename from hashes.txt
-async function getStoredHash(filename) {
-    // We don't care about filename matching anymore, just return null
-    // so it always checks the hash comparison in checkAndBackup
-    return null;
 }
 
 // Update or add hash entry in hashes.txt
@@ -71,10 +74,10 @@ async function updateHashFile(filename, newHash) {
 async function createBackup(filename, content) {
     const now = new Date();
     
-        // Create date folder (YYYY-MM-DD) using local time
+    // Create date folder (YYYY-MM-DD) using local time
     const dateFolder = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     
-        // Create time string (H-MM-SS-AM/PM)
+    // Create time string (H-MM-SS-AM/PM)
     let hours = now.getHours();
     const minutes = now.getMinutes().toString().padStart(2, '0');
     const seconds = now.getSeconds().toString().padStart(2, '0');
@@ -82,7 +85,7 @@ async function createBackup(filename, content) {
     hours = hours % 12 || 12; // Convert to 12-hour format
     const timeStr = `${hours}-${minutes}-${seconds}-${ampm}`;
     
-        // Create folder name with time and just the base filename
+    // Create folder name with time and just the base filename
     const baseFilename = path.basename(filename);
     const backupFolderName = `${timeStr}-${baseFilename}`;
     const backupDir = path.join(VERSIONS_DIR, dateFolder, backupFolderName);
@@ -105,7 +108,6 @@ export async function checkAndBackup(filename, content) {
     // Ignore blacklisted files/folders
     const IGNORED_PATTERNS = [
         'versions/',
-        'old/',
         'node_modules/',
         '.git/',
         '.claude/',
@@ -154,52 +156,31 @@ export function startFileWatcher() {
     const debounceTimers = {};
     const DEBOUNCE_MS = 2000;
     
-    const watcher = chokidar.watch(WATCH_PATHS, {
+        const watcher = chokidar.watch(WATCH_PATHS, {
         usePolling: false,
         ignoreInitial: true
     });
     
-        watcher.on('change', async (filePath) => {
-        // Clear existing timer for this file
+    function handleFileEvent(filePath) {
         if (debounceTimers[filePath]) {
             clearTimeout(debounceTimers[filePath]);
         }
         
-        // Set new timer
         debounceTimers[filePath] = setTimeout(async () => {
             delete debounceTimers[filePath];
             
             try {
                 const relativePath = path.relative(BASE_DIR, filePath);
                 const content = await fs.readFile(filePath, 'utf-8');
-                
                 await checkAndBackup(relativePath, content);
             } catch (error) {
                 // Error backing up file
             }
         }, DEBOUNCE_MS);
-    });
+    }
     
-    watcher.on('add', async (filePath) => {
-        // Clear existing timer for this file
-        if (debounceTimers[filePath]) {
-            clearTimeout(debounceTimers[filePath]);
-        }
-        
-        // Set new timer
-        debounceTimers[filePath] = setTimeout(async () => {
-            delete debounceTimers[filePath];
-            
-            try {
-                const relativePath = path.relative(BASE_DIR, filePath);
-                const content = await fs.readFile(filePath, 'utf-8');
-                
-                await checkAndBackup(relativePath, content);
-            } catch (error) {
-                // Error backing up file
-            }
-        }, DEBOUNCE_MS);
-    });
+    watcher.on('change', handleFileEvent);
+    watcher.on('add', handleFileEvent);
     
     return watcher;
 }

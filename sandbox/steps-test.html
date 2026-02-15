@@ -1,57 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Page</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Faustina:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="midnight-portfolio.css">
-</head>
-<body>
-<div class="hero-section centered-hero" style="margin-top: 80px; margin-bottom: 80px;">
-  <h1 style="color: #e8d4f8; font-family: 'Instrument Serif', serif; font-size: 3.5rem;">Midnight Projects</h1>
-  <p style="color: #e8d4f8; font-family: 'Inter', sans-serif;">Showcasing work built in the quiet hours</p>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Faustina:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="steps-test.css">
+    </head>
+    <body>
+<div class="hero-section centered-hero" style="margin-top: 60px; margin-bottom: 60px;">
+  <h1 style="color: #191919ff; font-family: 'Instrument Serif', serif; font-size: 3rem;">Our Process</h1>
+  <p style="color: #191919ff; font-family: 'Inter', sans-serif;">Leverage synergistic paradigms to revolutionize quantum scalable solutions and drive transformative disruption across enterprise solar systems.</p>
 </div>
-<div class="projects-section" style="margin-top: 40px; margin-bottom: 40px;">
-  <div class="projects-grid" data-theme="dark">
-    
-    <div class="project-card" data-theme="dark">
-      <div class="project-status live">Live</div>
-      <h3 style="color: #e8d4f8;">Constellation Map</h3>
-            <p style="color: #c8b4d8;">Interactive star chart with real-time astronomical data and constellation identification using WebGL rendering.</p>
-      <div class="tech-stack">Three.js • WebGL • Astronomy API</div>
-      <div class="project-links">
-        <a href="#" class="btn-primary">View Project</a>
-        <a href="#" class="btn-secondary" style="color: #f7f7f7ff;">GitHub</a>
-      </div>
-    </div>
-    <div class="project-card" data-theme="dark">
-      <div class="project-status beta">Beta</div>
-      <h3 style="color: #e8d4f8;">Lunar Phase Tracker</h3>
-            <p style="color: #c8b4d8;">Track moon phases and celestial events with precise calculations and beautiful visualizations.</p>
-      <div class="tech-stack">JavaScript • Canvas • Lunar Calc</div>
-      <div class="project-links">
-        <a href="#" class="btn-primary">View Project</a>
-        <a href="#" class="btn-secondary" style="color: #f7f7f7ff;">GitHub</a>
-      </div>
-    </div>
-    <div class="project-card" data-theme="dark">
-      <div class="project-status coming-soon">Coming Soon</div>
-      <h3 style="color: #e8d4f8;">Deep Space Explorer</h3>
-            <p style="color: #c8b4d8;">Navigate through distant galaxies with immersive 3D space exploration and educational content.</p>
-      <div class="tech-stack">React Three Fiber • GSAP • NASA API</div>
-      <div class="project-links">
-        <a href="#" class="btn-primary">View Project</a>
-        <a href="#" class="btn-secondary" style="color: #f7f7f7ff;">GitHub</a>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="process-steps" style="font-family: 'Inter', sans-serif; --line-color: #e5e5e5; margin-top: 60px; margin-bottom: 60px;">
 
+     <div class="step-item">
+       <div class="step-number">1</div>
+       <div class="step-content">
+         <h4 style="color: #191919ff;">Streamline Your Workflow Process</h4>
+         <p style="color: #191919ff;">Automate repetitive tasks and eliminate bottlenecks with our intelligent workflow management system designed for modern businesses.</p>
+       </div>
+     </div>
+     <div class="step-item">
+       <div class="step-number">2</div>
+       <div class="step-content">
+         <h4 style="color: #191919ff;">Implement Advanced Security Protocols</h4>
+         <p style="color: #191919ff;">Protect your data with military-grade encryption and multi-factor authentication while maintaining seamless user experience.</p>
+       </div>
+     </div>
+     <div class="step-item">
+       <div class="step-number">3</div>
+       <div class="step-content">
+         <h4 style="color: #191919ff;">Scale Your Operations Efficiently</h4>
+         <p style="color: #191919ff;">Handle increased demand effortlessly with our cloud-native infrastructure that grows with your business needs.</p>
+       </div>
+     </div>
+     <div class="step-item">
+       <div class="step-number">4</div>
+       <div class="step-content">
+         <h4 style="color: #191919ff;">Optimize Performance and Analytics</h4>
+         <p style="color: #191919ff;">Make data-driven decisions with real-time insights and comprehensive reporting tools that matter to your bottom line.</p>
+       </div>
+     </div>
+     <div class="step-item">
+       <div class="step-number">5</div>
+       <div class="step-content">
+         <h4 style="color: #191919ff;">Handle massive data at scale with 24 hour uhh yeah</h4>
+         <p style="color: #191919ff;">Enterprise-ready deployment options with 99.9% uptime guarantee, dedicated support, and custom integration capabilities. Master antidisestablishmentarianism in one click.</p>
+       </div>
+     </div>
+</div>
+    <script src="steps-test.js"></script>
+    
 <script>
 // Error logging for Blueprint
 const ERROR_LOG_ENDPOINT = 'http://localhost:3002/log-browser-error';
-const PAGE_NAME = 'midnight-portfolio.html';
+const PAGE_NAME = 'steps-test.html';
 
 window.onerror = function(message, source, line, column, error) {
   fetch(ERROR_LOG_ENDPOINT, {
@@ -184,4 +188,4 @@ window.fetch = function(...args) {
     });
 };
 </script></body>
-</html>
+    </html>

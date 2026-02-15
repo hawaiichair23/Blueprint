@@ -2,7 +2,7 @@
 export const hero = {
   html: (params = {}) => {
     const title = params.title || 'Lorem ipsum dolor sit amet.';
-    const description = params.description || 'Nulla vitae odio quis sem vehicula malesuada et a est. Suspendisse fringilla turpis et eros semper, id elementum quam porttitor.';
+    const description = params.description || 'Leverage synergistic paradigms to revolutionize quantum scalable solutions and drive transformative disruption across enterprise solar systems.';
     const spacing = params.spacing || '60px';
     const theme = params.theme || 'light';
     const titleFont = params.font || 'Instrument Serif';
