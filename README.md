@@ -148,5 +148,3 @@ Blueprint currently only works with Claude Desktop until OpenAI stops being bad.
 
 **Note:** If testing changes to the MCP server, you will need to completely close Claude Desktop from the system tray. The server Node.js process can get stuck sometimes, so you may need to manually kill it with taskkill /f /im node.exe in Command Prompt before restarting Claude Desktop.
 
-Put the bash commands in code blocks like the JSON:
-
