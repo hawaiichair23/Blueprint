@@ -1,13 +1,13 @@
 
 ## Development Status & Safety Notice
 
-Blueprint is a work in progress -- file system access is currently unrestricted, so use at your own risk. Docker sandboxing will be added at a later stage in development for stronger security and resource limits.
+**Blueprint** is a work in progress -- file system access is currently unrestricted, so use at your own risk. Docker sandboxing will be added at a later stage in development for stronger security and resource limits.
 
 **Do not deploy Blueprint in production or use with sensitive information. Local dev only.**
 
 # 📖Blueprint
 
-Blueprint is an MCP server for accelerated development with AI. At its core is a simple declarative syntax that allows either the user or the AI assistant to write to a .txt file & run node generate.js to generate files locally. The parser is located in generate.js. It reads the .txt files from blueprint/, parses its syntax, extracts the parameters, matches it with components from the schema/ library, and uses Node.js's `fs.writeFileSync()` to write generated HTML/CSS/JS directly to the filesystem in the sandbox.
+**Blueprint** is an MCP server for accelerated development with AI. At its core is a simple declarative syntax that allows either the user or the AI assistant to write to a .txt file & run node generate.js to generate files locally. The parser is located in generate.js. It reads the .txt files from **blueprint/**, parses its syntax, extracts the parameters, matches it with components from the **schema/** library, and uses Node.js's `fs.writeFileSync()` to write generated HTML/CSS/JS directly to the filesystem in the sandbox.
 
 **Current Development:**
 - Currently Windows-only
@@ -35,7 +35,7 @@ Blueprint is an MCP server for accelerated development with AI. At its core is a
 
 **write** - writes files in overwrite mode or string replace mode. This will either generate new file or find and replace exact line and column with whitespace normalization to preserve indentation.
 
-**search** - searches using queries, exact line number, or functions using an AST parser.
+**search** - searches using queries, exact line number, or returns whole functions using an AST parser.
 
 **execute** - run the generate.js command, list contents of directories, or list components.
 
@@ -70,7 +70,7 @@ All potential search parameters are false by default and can be left off, except
 
 ## Execute
 
-**generate** - Compiles blueprint files to HTML/CSS/JS. Without filename parameter, generates all blueprints in /blueprints/ folder. With filename parameter (e.g., "basic-projects.txt"), generates only that specific blueprint file.
+**generate** - Compiles blueprint files to HTML/CSS/JS. Without filename parameter, generates all blueprints in **blueprints/** folder. With filename parameter (e.g., "basic-projects.txt"), generates only that specific blueprint file.
 
 **list** - Show files in given directory. Requires directory name.
 
@@ -80,28 +80,11 @@ All potential search parameters are false by default and can be left off, except
 
 Finds the file browser_errors.jsonl in sandbox/ and returns using any combination of categories the AI specifies.
 
-**timestamp**
-
-**page**
-
-**type**
-
-**message**
-
-**source**
-
-**line**
-
-**column**
-
-**stack**
-
-**url**
-
-**UserAgent**
+** Available filters: timestamp, page, type, message, source, line, column, stack, url, UserAgent**
 
 ## Blueprint Syntax
 
+All features except page: (name) and base blueprint template can be left off.
 ```
 page:basic-projects;
 
@@ -114,7 +97,7 @@ project-cards;
 
 ## Print
 
-prt.js is an automatic file versioning system that saves backups to the versions/ folder with **/YYYY-MM-DD/H-MM-SS-AM-filename/** timestamping. It's intended to save directory files safely in an AI-assisted environment where the AI will make mistakes constantly. It runs automatically when the MCP server starts and saves using SHA-256 hashing to avoid duplicates.
+**prt.js** is an automatic file versioning system that saves backups to the **versions/** folder with **/YYYY-MM-DD/H-MM-SS-AM-filename/** timestamping. It's intended to save directory files safely in an AI-assisted environment where the AI will make mistakes constantly. It runs automatically when the MCP server starts and saves using SHA-256 hashing to avoid duplicates.
 
 ## Local Installation
 
@@ -123,13 +106,14 @@ All installation instructions are subject to change in the future as I add Docke
 Prerequisites: Node.js (version 16 or higher recommended)
 Clone the repository:
 
-```git clone https://github.com/yourusername/Blueprint.git
-   cd Blueprint
+```bash
+git clone https://github.com/yourusername/Blueprint.git
+cd Blueprint
 ```
 
-Install dependencies:
-
-``` npm install
+**Install dependencies:**
+```bash
+npm install
 ```
 
 Verify installation: Run node server.js in the Blueprint directory. If it starts without errors, all is well.
@@ -162,3 +146,6 @@ Blueprint currently only works with Claude Desktop until OpenAI stops being bad.
 5. Blueprint tools will now be available in your Claude conversations.
 
 **Note:** If testing changes to the MCP server, you will need to completely close Claude Desktop from the system tray. The server Node.js process can get stuck sometimes, so you may need to manually kill it with taskkill /f /im node.exe in Command Prompt before restarting Claude Desktop.
+
+Put the bash commands in code blocks like the JSON:
+
