@@ -11,83 +11,95 @@ export default {
 
 // Instructions for AI
 `
-    File Structure:
+File Structure:
 
-    /Blueprint/
-    ├── server.js               # MCP server (don't modify directly)
-    ├── generate.js             # Compiles blueprints to files
-    ├── blueprint.txt           # Blueprint definitions (use write tool with mode=blueprint)
-    ├── /schema/
-    │   └── index.js           # All component definitions
-    └── /sandbox/              # Generated files go here
-        ├── *.html
-        ├── *.css
-        └── *.js
+/Blueprint/
+├── server.js               # MCP server
+├── generate.js             # Compiles blueprints to files using fs.writeFileSync()
+├── /blueprints/            # Blueprint .txt files
+├── /schema/
+│   ├── /components/        # Component definitions organized by category
+│   ├── /flows/            # Flow definitions
+│   └── blueprints.js      # Blueprint templates
+└── /sandbox/              # Generated files output here
+    ├── *.html
+    ├── *.css
+    └── *.js
 
-## Available Tools:
+## MCP Tools:
 
-**read** - Get content
-- {"target": "file", "filename": "blueprint.txt"} - Read any file
-- {"target": "blueprints"} - Read schema/syntax reference
-- {"target": "generated"} - Read generated HTML output
+**read** - View files, schema, and generated output
+- target: "file" + filename - Read any file (absolute or relative from BASE_DIR)
+- target: "index" - Read this schema documentation
+- target: "generated" - Read most recent generated HTML (first 800 chars)
 
-**write** - Create or modify files
-- {"mode": "blueprint", "filename": "blueprint.txt", "content": "..."} - Write blueprint
-- {"mode": "overwrite", "filename": "app.js", "content": "..."} - Create/replace file in sandbox
-- {"mode": "segment", "filename": "app.js", "old_str": "old", "new_str": "new"} - Update part of file
+**write** - Create or modify files (unrestricted filesystem access)
+- mode: "overwrite" + filename + content - Create/replace entire file
+- mode: "segment" + filename + old_str + new_str - Find and replace with whitespace normalization
 
-**execute** - Run operations
-- {"command": "generate"} - Compile blueprint.txt to HTML/CSS/JS
-- {"command": "list", "directory": "sandbox"} - List files in directory
+**search** - Text search, line lookup, or AST parsing
+- filename + query - Text search with context
+- filename + line - Jump to specific line
+- filename + function_search: true + query - Find complete functions using Acorn parser
+- filename + list_functions: true - List all functions/classes/methods
+- discover: "component-name" - Explore component library (returns code, params, CSS, JS)
 
-**search** - Find text within files
-- {"filename": "schema/components.js", "query": "theme"} - Basic search
-- {"filename": "components.js", "query": "theme", "context": 5} - Search with more context lines
-- {"filename": "blueprint.txt", "query": "nav", "max_results": 3} - Limit number of matches
-- {"filename": "server.js", "query": "function", "case_sensitive": true} - Case-sensitive search
-- {"filename": "server.js", "query": "searchInContent", "function_search": true} - Find complete functions and code blocks
+**execute** - Run system operations
+- command: "generate" - Compile all blueprints or specific file with filename parameter
+- command: "list" + directory - List files in sandbox/schema/.
+- command: "list_components" - Show all available components/flows/blueprints
 
-## Blueprint System Overview
+**read_errors** - Parse browser error logs
+- Returns structured data from sandbox/browser-errors.jsonl
+- Filter by page, type, last_n errors
 
-blueprint.txt starts with page:name; then add components and flows.
+## Blueprint Syntax:
 
-## Universal parameters that work on almost all components:
+Blueprints are declarative .txt files in /blueprints/ folder:
+
+page:name;
+blueprint:template/name; theme=dark;
+component; param=value; param2=[array,items];
+flow:name;
+
+Rules:
+- Semicolons separate parameters (optional at end of line)
+- No quotes needed for arrays: links=[Home,About,Contact]
+- Quotes optional for strings: both theme=dark and theme="dark" work
+- Parameters cascade: blueprint theme applies to all components unless overridden
+
+Universal parameters (work on most components):
 - theme=dark/light - Color scheme
 - font=Inter/Roboto - Typography
 - spacing=60px - Margin top/bottom
 - color=#333 - Text color
 
-## Blueprint Syntax Rules:
-- No quotes around array items: links=[Product,Pricing,Contact]
-- Quotes optional for other params; both theme=dark and theme="dark" work
-- Use semicolons to separate parameters, missing semicolons are fine
+## How generate.js Works:
 
-## Definitions:
-- Blueprints -- overall page structure template
-- Components -- individual, reusable modules such as nav bars, header & text, buttons, or inputs. Can come with javascript built in
-- Flows -- reusable Javascript code defining behaviors such as fade transition, login logic, or animations
+1. Reads blueprint .txt file(s) from /blueprints/
+2. Parses syntax and extracts parameters (semicolon-separated key=value pairs)
+3. Matches components from schema/ library
+4. Combines HTML (blueprint template wraps component HTML)
+5. Combines CSS from all components
+6. Combines JS from flows
+7. Uses fs.writeFileSync() to write HTML/CSS/JS to /sandbox/
 
-## File Structure:
-- schema/ - Component definitions
-- sandbox/ - Generated files and your workspace
-- Blueprint/ - root directory with generate.js and blueprint.txt
-- blueprint.txt - Your blueprint source
+## Component Discovery:
 
-## How generate.js works:
-1. Reads blueprint.txt
-2. Finds blueprint template, uses its html.start + html.end wrapper
-3. Inserts component HTML between start/end
-4. Combines all CSS from blueprints and components
-5. Combines all JS from flows
-6. Outputs results to sandbox/
+Use discover tool to explore schema:
+- discover: "nav" → Returns nav component code, parameters, CSS, JS
+- discover: "accordion" → Component not found, lists all available components
 
-## Security & File Rules:
-- Don't edit schema/ or server.js directly
-- Don't place files outside sandbox/
-- Use .env files with PLACEHOLDER values for API keys
-- If user requests features that are not available in schema/, pick the closest blueprint and manually modify the generated file(s) afterward
+Components are organized in schema/components/ by category (navigation, content, layout, etc.)
 
-## Example blueprint.txt:
+## File Rules:
+
+- Generated files go to /sandbox/
+- Blueprint .txt files go in /blueprints/
+- Filesystem access is currently unrestricted (Docker sandboxing coming)
+- Use absolute paths or relative paths from BASE_DIR (Blueprint root directory)
+
+## Example Blueprint:
 
 page:login;
 blueprint:auth/login+dashboard; theme=light;
@@ -95,11 +107,4 @@ provider:google; text="Continue with Google";
 separator:text; content="OR CONTINUE WITH EMAIL";
 form:email; fields=[email,password]; submit="Sign In";
 flow:email_submit > dashboard;
-flow:logout > login;
-
-## Example 2
-
-page:purple-test;
-blueprint:test/blank; background=purple;
-nav; links=[Home,Features,About,Contact];
 `

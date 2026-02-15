@@ -1,9 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "mcp__blueprint-generator__execute",
-      "mcp__blueprint-generator__read",
-      "mcp__blueprint-generator__search"
+      "mcp__blueprint__write",
+      "mcp__blueprint__execute",
+      "mcp__blueprint__read",
+      "mcp__blueprint__search",
+      "mcp__blueprint__read_errors"
     ],
     "deny": [],
     "ask": []
