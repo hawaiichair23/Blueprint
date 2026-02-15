@@ -80,7 +80,7 @@ All potential search parameters are false by default and can be left off, except
 
 Finds the file browser_errors.jsonl in sandbox/ and returns using any combination of categories the AI specifies.
 
-** Available filters: timestamp, page, type, message, source, line, column, stack, url, UserAgent**
+**Available filters: timestamp, page, type, message, source, line, column, stack, url, UserAgent**
 
 ## Blueprint Syntax
 
@@ -103,8 +103,9 @@ project-cards;
 
 All installation instructions are subject to change in the future as I add Docker and improve the server, and I will do my best to keep up to date with the instructions. For now:
 
-Prerequisites: Node.js (version 16 or higher recommended)
-Clone the repository:
+**Prerequisites: Node.js (version 16 or higher recommended)**
+
+**Clone the repository:**
 
 ```bash
 git clone https://github.com/yourusername/Blueprint.git
@@ -116,7 +117,7 @@ cd Blueprint
 npm install
 ```
 
-Verify installation: Run node server.js in the Blueprint directory. If it starts without errors, all is well.
+**Verify installation:** Run node server.js in the Blueprint directory. If it starts without errors, all is well.
 
 ## Setup with Claude
 
