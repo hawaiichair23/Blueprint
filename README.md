@@ -1,20 +1,20 @@
 
-## Development Status & Safety Notice
-
-**Blueprint** is a work in progress -- file system access is currently unrestricted, so use at your own risk. Docker sandboxing will be added at a later stage in development for stronger security and resource limits.
-
-**Do not deploy Blueprint in production or use with sensitive information. Local dev only.**
-
 # 📖Blueprint
 
-**Blueprint** is an MCP server for accelerated development with AI. At its core is a simple declarative syntax that allows either the user or the AI assistant to write to a .txt file & run node generate.js to generate files locally. The parser is located in generate.js. It reads the .txt files from **blueprint/**, parses its syntax, extracts the parameters, matches it with components from the **schema/** library, and uses Node.js's `fs.writeFileSync()` to write generated HTML/CSS/JS directly to the filesystem in the sandbox.
+**Blueprint** is a local, secure, token-efficient MCP server that generates real working code directly on your machine. It uses a schema-driven approach so the AI isn't rewriting the same 500 lines of HTML from scratch every time. At its core is a simple declarative syntax that allows the AI assistant to write to a .txt file & run node generate.js to generate files locally. 
+
+The generate.js reads the .txt files from **blueprint/**, parses its syntax, extracts the parameters, matches it with components from the **schema/** library, and uses Node.js's `fs.writeFileSync()` to write generated HTML/CSS/JS directly to the filesystem in the sandbox.
+
+The write tool does surgical, column-accurate string replacement instead of the "rewrite the whole file" approach that burns tokens and introduces regressions.
+
+Blueprint is local. The code runs on your machine, and nothing is sent to a third party. There is no vendor lock-in, cloud dependency, or data leaving your environment.
 
 **Current Development:**
 - Javascript-specific for components
 - Plans to add React support next
 - Adding to component library for common web patterns
 - Ideas for backend patterns coming
-- Docker support coming along with other OS support
+- Docker support coming 
 
 ## Dependencies
 
@@ -100,8 +100,6 @@ project-cards;
 
 ## Local Installation
 
-All installation instructions are subject to change in the future as I add Docker and improve the server, and I will do my best to keep up to date with the instructions. For now:
-
 **Prerequisites: Node.js (version 16 or higher recommended)**
 
 **Clone the repository:**
@@ -120,7 +118,6 @@ npm install
 
 ## Setup with Claude
 
-Blueprint currently only works with Claude Desktop until OpenAI stops being bad. 
 **Note:** Claude Desktop the app, not Claude in the browser.
 
 1. Locate your Claude Desktop config file:
@@ -146,4 +143,11 @@ Blueprint currently only works with Claude Desktop until OpenAI stops being bad.
 5. Blueprint tools will now be available in your Claude conversations.
 
 **Note:** If testing changes to the MCP server, you will need to completely close Claude Desktop from the system tray. The server Node.js process can get stuck sometimes, so you may need to manually kill it with taskkill /f /im node.exe in Command Prompt before restarting Claude Desktop.
+
+## Development Status & Safety Notice
+
+**Blueprint** is a work in progress -- file system access is currently unrestricted, so use at your own risk. Docker sandboxing will be added at a later stage in development for stronger security and resource limits.
+
+**Do not deploy Blueprint in production or use with sensitive information. Local dev only.**
+
 
