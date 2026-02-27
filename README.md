@@ -1,5 +1,7 @@
 <img width="1574" height="706" alt="rty" src="https://github.com/user-attachments/assets/39a04470-ad3b-4dee-9e48-ae768bfcd198" />
 Generated in 4 lines.
+
+
 # 📖Blueprint
 
 **Blueprint** is a local, secure, token-efficient MCP server that generates real working code directly on your machine. It uses a schema-driven approach so the AI isn't rewriting the same 500 lines of HTML from scratch every time. At its core is a simple declarative syntax that allows the AI assistant to write to a .txt file & run node generate.js to generate files locally. 
