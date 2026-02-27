@@ -431,7 +431,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 }
             },            {
                 name: 'search',
-                description: 'Search and analyze code: find text with context, discover component info, find specific functions, or list all functions in a file',
+                description: 'Search and analyze code: find text with context, discover component info, find specific functions, find code by line, or list all functions in a file',
                 inputSchema: {
                     type: 'object',
                     properties: {
@@ -441,7 +441,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                         context: { type: 'number', default: 3, description: 'Lines of context before/after matches' },
                         case_sensitive: { type: 'boolean', default: false, description: 'Whether search should be case sensitive' },
                         max_results: { type: 'number', default: 10, description: 'Maximum number of matches to return' },                        
-                        function_search: { type: 'boolean', default: false, description: 'Find complete functions, variables, classes, and code blocks' },
+                        function_search: { type: 'boolean', default: false, description: 'Returns the entire function body, including variables, classes, and code blocks' },
                         list_functions: { type: 'boolean', default: false, description: 'List all functions in a file (table of contents)' },
                         discover: { type: 'string', description: 'Component name to discover - shows component code, params, or lists all available components if not found' }
                     },
@@ -457,7 +457,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                         mode: { 
                             type: 'string', 
                             enum: ['overwrite', 'segment'],
-                            description: 'Write mode: overwrite (replace entire file), or segment (find/replace)'
+                            description: 'Write mode: overwrite (replace entire file), or segment (find/replace). IMPORTANT: When making multiple segment replacements in the same file, always work BOTTOM-UP (e.g. edit line 900 before line 500). This prevents earlier replacements from shifting line numbers and breaking subsequent replacements.'
                         },
                         filename: { 
                             type: 'string', 
@@ -469,7 +469,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                         },
                         old_str: { 
                             type: 'string', 
-                            description: 'Exact string to find (for segment mode)' 
+                            description: 'Exact string to find (for segment mode). Must be unique in the file — if the string appears more than once, the wrong instance may be replaced. Use enough surrounding context to guarantee uniqueness.' 
                         },
                         new_str: { 
                             type: 'string', 
@@ -477,7 +477,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                         }
                     },
                     required: ['mode', 'filename'],
-                    // Conditional requirements handled in validation
                 }
             },            {
                 name: 'execute',
@@ -493,7 +492,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                         directory: { 
                             type: 'string', 
                             enum: ['sandbox', 'schema', '.'],
-                            description: 'Directory to list (required for list command)'
+                            description: 'Directory to list (required for list command) OR any absolute path'
                         },
                         filename: {
                             type: 'string',
@@ -915,11 +914,40 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         };
                     }
                 
+                    // UNIQUENESS CHECK - count all matches to ensure old_str is unambiguous
+                    let totalMatches = 0;
+                    if (normalizedOldLines.length > 1) {
+                        for (let i = 0; i <= normalizedLines.length - normalizedOldLines.length; i++) {
+                            let matches = true;
+                            for (let j = 0; j < normalizedOldLines.length; j++) {
+                                if (normalizedLines[i + j] !== normalizedOldLines[j]) {
+                                    matches = false;
+                                    break;
+                                }
+                            }
+                            if (matches) totalMatches++;
+                        }
+                    } else {
+                        const searchStr = normalizedOldLines[0];
+                        for (let i = 0; i < normalizedLines.length; i++) {
+                            if (normalizedLines[i].indexOf(searchStr) !== -1) totalMatches++;
+                        }
+                    }
+                    
+                    if (totalMatches > 1) {
+                        return {
+                            content: [{
+                                type: 'text',
+                                text: `❌ Found ${totalMatches} matches for old_str in ${args.filename} — replacement requires a unique match. Add more surrounding context to old_str to make it unambiguous.`
+                            }]
+                        };
+                    }
+                    
                     // MAP BACK to original line numbers
                     const originalStartLine = lineMapping[matchStartLineNormalized];
                     const originalEndLine = lineMapping[matchEndLineNormalized];
                 
-                                        // Find COLUMN positions by matching trimmed content within original lines
+                    // Find COLUMN positions by matching trimmed content within original lines
                     const firstOriginalLine = fileLines[originalStartLine];
                     const firstNormalizedLine = normalizedLines[matchStartLineNormalized];
                     
@@ -960,7 +988,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     for (let i = 0; i < originalStartLine; i++) {
                         startOffset += fileLines[i].length + 1; // +1 for newline
                     }
-                    startOffset += startColumn;
+                                        // startOffset stays at beginning of line - new_str includes its own indentation
                 
                     let endOffset = 0;
                     for (let i = 0; i < originalEndLine; i++) {
@@ -968,22 +996,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     }
                     endOffset += endColumn;
                 
-                                        // Get indentation from the match position
-                    // For inline matches (not at start of line), don't adjust indentation
-                    let adjustedNewCode;
-                    if (startColumn > 0 && matchStartColumn !== undefined && matchStartColumn > 0) {
-                        // Inline replacement - use new_str as-is, no indentation adjustment
-                        adjustedNewCode = args.new_str;
-                    } else {
-                        // Start-of-line replacement - adjust indentation to match original
-                        const originalIndent = firstOriginalLine.substring(0, startColumn);
-                        const newCodeIndent = getIndentation(args.new_str);
-                        adjustedNewCode = adjustIndentation(args.new_str, originalIndent, newCodeIndent);
-                    }
+                    // Perform replacement using character positions (offsets)
+                    const adjustedNewCode = args.new_str;
                 
                     // Perform replacement using character positions (offsets)
                     const beforeMatch = fileContent.substring(0, startOffset);
-                                        const afterMatch = fileContent.substring(endOffset);
+                    const afterMatch = fileContent.substring(endOffset);
                     const updatedContent = beforeMatch + adjustedNewCode + afterMatch;
                     
                     await fs.writeFile(segmentPath, updatedContent);

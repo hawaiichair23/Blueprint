@@ -10,8 +10,7 @@
 **Blueprint** is an MCP server for accelerated development with AI. At its core is a simple declarative syntax that allows either the user or the AI assistant to write to a .txt file & run node generate.js to generate files locally. The parser is located in generate.js. It reads the .txt files from **blueprint/**, parses its syntax, extracts the parameters, matches it with components from the **schema/** library, and uses Node.js's `fs.writeFileSync()` to write generated HTML/CSS/JS directly to the filesystem in the sandbox.
 
 **Current Development:**
-- Currently Windows-only
-- Javascript-specific
+- Javascript-specific for components
 - Plans to add React support next
 - Adding to component library for common web patterns
 - Ideas for backend patterns coming
