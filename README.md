@@ -1,5 +1,9 @@
 <img width="1574" height="706" alt="rty" src="https://github.com/user-attachments/assets/39a04470-ad3b-4dee-9e48-ae768bfcd198" />
-
+## Blueprint DSL
+page:basic-projects;
+blueprint:test/blank;
+hero; title="My Projects";
+project-cards;
 
 # 📖Blueprint
 
