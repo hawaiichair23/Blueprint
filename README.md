@@ -52,31 +52,42 @@ Blueprint is local. The code runs on your machine, and nothing is sent to a thir
 ## Search
 All potential search parameters are false by default and can be left off, except for filename.
 
-**filename** (required)
+- **filename** (required)
 
-**query** - text-based search.
+- **query**
+   - text-based search.
 
-**line** - jump to exact line of file.
+- **line**
+   - jump to exact line of file.
 
-**context** - lines of context to provide around any given search.
+- **context**
+   - lines of context to provide around any given search.
 
-**case_sensitive** - case sensitivity of result.
+- **case_sensitive**
+   - case sensitivity of result.
 
-**max_results** - max results for text-based search. default: 10.
+- **max_results**
+   - max results for text-based search. default: 10.
 
-**function_search** - finds and returns complete functions using the Acorn parser.
+- **function_search**
+   - finds and returns complete functions using the Acorn parser.
 
-**list_functions** - lists all functions, classes, and methods in file, no query needed.
+- **list_functions**
+   - lists all functions, classes, and methods in file, no query needed.
 
-**discovery** - This is the AI's tools for exploring the schema library. Returns the component object with html, params, CSS, and JS. If not found, will list all available components by name.
+- **discovery**
+   - This is the AI's tools for exploring the schema library. Returns the component object with html, params, CSS, and JS. If not found, will list all available components by name.
 
 ## Execute
 
-**generate** - Compiles blueprint files to HTML/CSS/JS. Without filename parameter, generates all blueprints in **blueprints/** folder. With filename parameter (e.g., "basic-projects.txt"), generates only that specific blueprint file.
+- **generate**
+   - Compiles blueprint files to HTML/CSS/JS. Without filename parameter, generates all blueprints in **blueprints/** folder. With filename parameter (e.g., "basic-projects.txt"), generates only that specific blueprint file.
 
-**list** - Show files in given directory. Requires directory name.
+- **list**
+   - Show files in given directory. Requires directory name.
 
-**list_components** - Show names of all components, flows, and blueprints.
+- **list_components**
+   - Show names of all components, flows, and blueprints.
 
 ## Read_Errors
 
