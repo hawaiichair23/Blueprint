@@ -45,11 +45,10 @@ Blueprint is local. The code runs on your machine, and nothing is sent to a thir
 
 ## Read
 
+- **filename** (required)
+  
 - **target** (required)
-   - file, index, or generated. File is for finding any file name, index refers to index.js, which is a convenient explanation of Blueprint for the AI, and generated finds the most recently generated HTML file and shows the first 800 characters.
-
-- **filename**
-   - filename. Required for using target: file.
+   - **file, index, or generated.** 
 
 ## Search
 All potential search parameters are false by default and can be left off, except for filename.
