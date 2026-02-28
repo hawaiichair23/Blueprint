@@ -13,7 +13,7 @@ The write tool does surgical, column-accurate string replacement instead of the 
 Blueprint is local. The code runs on your machine, and nothing is sent to a third party. There is no vendor lock-in, cloud dependency, or data leaving your environment.
 
 **Current Development:**
-- Javascript-specific for components
+- Javascript-specific components
 - Plans to add React support next
 - Adding to component library for common web patterns
 - Ideas for backend patterns coming
