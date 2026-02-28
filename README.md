@@ -33,15 +33,15 @@ Blueprint is local. The code runs on your machine, and nothing is sent to a thir
 
 ## Filesystem Tools
 
-**read** - view files, schema, and generated output. Uses absolute paths or relative path from the base directory.
+- **read** - view files, schema, and generated output. Uses absolute paths or relative path from the base directory.
 
-**write** - writes files in overwrite mode or string replace mode. This will either generate new file or find and replace exact line and column with whitespace normalization to preserve indentation.
+- **write** - writes files in overwrite mode or string replace mode. This will either generate new file or find and replace exact line and column with whitespace normalization to preserve indentation.
 
-**search** - searches using queries, exact line number, or returns whole functions using an AST parser.
+- **search** - searches using queries, exact line number, or returns whole functions using an AST parser.
 
-**execute** - run the generate.js command, list contents of directories, or list components.
+- **execute** - run the generate.js command, list contents of directories, or list components.
 
-**read_errors** - read browser error logs from the browser formatted nicely.
+- **read_errors** - read browser error logs from the browser formatted nicely.
 
 ## Read
 
@@ -54,29 +54,21 @@ All potential search parameters are false by default and can be left off, except
 
 - **filename** (required)
 
-- **query**
-   - text-based search.
+- **query** - text-based search.
 
-- **line**
-   - jump to exact line of file.
+- **line** - jump to exact line of file.
 
-- **context**
-   - lines of context to provide around any given search.
+- **context** - lines of context to provide around any given search.
 
-- **case_sensitive**
-   - case sensitivity of result.
+- **case_sensitive** - case sensitivity of result.
 
-- **max_results**
-   - max results for text-based search. default: 10.
+- **max_results** - max results for text-based search. default: 10.
 
-- **function_search**
-   - finds and returns complete functions using the Acorn parser.
+- **function_search** - finds and returns complete functions using the Acorn parser.
 
-- **list_functions**
-   - lists all functions, classes, and methods in file, no query needed.
+- **list_functions** - lists all functions, classes, and methods in file, no query needed.
 
-- **discovery**
-   - This is the AI's tools for exploring the schema library. Returns the component object with html, params, CSS, and JS. If not found, will list all available components by name.
+- **discovery** - This is the AI's tools for exploring the schema library. Returns the component object with html, params, CSS, and JS. If not found, will list all available components by name.
 
 ## Execute
 
