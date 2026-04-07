@@ -4,7 +4,7 @@ Generated in 4 lines.
 
 # 📖Blueprint
 
-**Blueprint** is a local, secure, token-efficient MCP server that generates real working code directly on your machine. It uses a schema-driven approach so the AI isn't rewriting the same 500 lines of HTML from scratch every time. At its core is a simple declarative syntax that allows the AI assistant to write to a .txt file & run node generate.js to generate files locally. 
+**Blueprint** is a local, secure, token-efficient MCP server that generates code directly on your machine. It uses a schema-driven approach so the AI isn't rewriting the same 500 lines of HTML from scratch every time. At its core is a simple declarative syntax that allows the AI assistant to write to a .txt file & run node generate.js to generate files locally. 
 
 The **generate.js** reads the .txt files from **blueprint/**, parses its syntax, matches it with components from the **schema/** library, and uses Node.js's `fs.writeFileSync()` to write generated HTML/CSS/JS directly to the filesystem in the sandbox.
 
