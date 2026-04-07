@@ -155,6 +155,6 @@ npm install
 
 **Blueprint** is a work in progress -- file system access is currently unrestricted, so use at your own risk. Docker sandboxing will be added at a later stage in development for stronger security and resource limits.
 
-**Do not deploy Blueprint in production or use with sensitive information. Local dev only.**
+**Do not deploy Blueprint in production or use with sensitive information.**
 
 
