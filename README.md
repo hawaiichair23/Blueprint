@@ -15,7 +15,7 @@ Blueprint is local. The code runs on your machine, and nothing is sent to a thir
 **Current Development:**
 - Javascript-specific components
 - Plans to add React support next
-- Adding to component library for common web patterns
+- Adding common web patterns to component library 
 - Ideas for backend patterns coming
 - Docker support coming 
 
