@@ -8,7 +8,7 @@ Generated in 4 lines.
 
 The **generate.js** reads the .txt files from **blueprint/**, parses its syntax, matches it with components from the **schema/** library, and uses Node.js's `fs.writeFileSync()` to write generated HTML/CSS/JS directly to the filesystem in the sandbox.
 
-The write tool does surgical, column-accurate string replacement instead of the "rewrite the whole file" approach that can burn through tokens.
+The write tool does surgical, column-accurate string replacement while keeping indentation, with exact line/column feedback.
 
 Blueprint is local. The code runs on your machine, and nothing is sent to a third party. There is no vendor lock-in, cloud dependency, or data leaving your environment.
 
